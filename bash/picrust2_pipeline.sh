@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -ex
 
-# scp study_seqs.fna and study_seqs.biom into the picrust2_out_pipeline directory
+# [1] scp study_seqs.fna and study_seqs.biom into the picrust2_out_pipeline directory
 
 # [2] pipe sequence placement, hidden-state prediction of genomes, metagenome prediction and pathway-level predictions
-# picrust2_pipeline.py -s /data/study_seqs.fna -i /data/study_seqs.biom -o /data/picrust2_out_pipeline -p 1
+picrust2_pipeline.py -s /data/study_seqs.fna -i /data/study_seqs.biom -o /data/picrust2_out_pipeline -p 1
 
 # [3] add description of each functional category to table of genes or pathways
 
