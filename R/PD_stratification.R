@@ -1,9 +1,10 @@
 #load packages
 library(ggplot2)
 library(dplyr)
+library(readxl)
+library(xlsx)
 
 #import metadata Excel file
-library(readxl)
 parkinsons_metadata <- read_excel("~/4th Year Uni/TERM 2/MICB 447/Datasets/parkinsons_metadata.xlsx")
 View(parkinsons_metadata)
 
@@ -205,7 +206,5 @@ stratified_PD_data_frame <- mutate(stratified_PD_data_frame, Vitamin_E_intake_st
                                                                                                                       "high")))
 #final output = stratified_PD_data_frame (111 columns, 300 rows)
 
-#load package
-library(xlsx)
-#export data frame as xlsx
+#export data frame as .xlsx file
 write.xlsx(stratified_PD_data_frame, "C:/Users/Helena/Documents/4th Year Uni/TERM 2/MICB 447/447_R_directory/+B3_stratified_PD_metadata.xlsx")
