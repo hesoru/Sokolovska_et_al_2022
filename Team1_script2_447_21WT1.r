@@ -340,7 +340,7 @@ PD_data_frame %>%
 write.xlsx(PD_data_frame, "/Users/Ayda/Desktop/stratified_PD_Disease_Combined_metadata.xlsx")
 
 
-#differential abundance PD vs Non-PD
+#differential abundance for PD vs non-PD
 
 #importing QIIME2 data into R
 biom_file <- import_biom("table-with-taxonomy.biom")
@@ -350,8 +350,7 @@ tree      <- read_tree_greengenes ("tree.nwk")
 #convert tree from multichotomous to dichotomous
 tree <- multi2di(tree)
 
-
-# Combine all information into a single phyloseq object
+#combine all information into a single phyloseq object
 physeq <- merge_phyloseq(biom_file, metadata, tree)
 
 #assign new taxonomic column name
@@ -362,11 +361,10 @@ head(tax_table(physeq))
 #Setting sampling depth
 sample_sums(physeq) >= 7000
 
-#Filter samples based on sampling depth
+#filter samples based on sampling depth
 at_least_7000 <- prune_samples(sample_sums(physeq) >= 7000, physeq)
 sample_sums(at_least_7000)
 
-#Getting most abundant taxa at the genus level
 #remove low abundance features
 total_counts <- taxa_sums(at_least_7000)
 relative_abundance <- calculate_relative_abundance(total_counts)
@@ -374,6 +372,68 @@ abundant <- relative_abundance > 0.001
 abundant_taxa <- prune_taxa(abundant, at_least_7000)
 abundant_taxa
 
+#set taxonomic level to species
+abundant_species <- tax_glom(abundant_taxa, taxrank = "Species")
+abundant_species
+
+#DESeq2 analysis species
+deseq_genus_species <- phyloseq_to_deseq2(abundant_species, ~ Disease)
+geo_means_species <- apply(counts(deseq), 1, calculate_gm_mean)
+deseq_species <- estimateSizeFactors(deseq, geoMeans = geo_means_species)
+deseq_species <- DESeq(deseq_species, fitType = "local")
+
+diff_abund_species <- results(deseq_species)
+
+#filter for data with p-value below alpha (0.05)
+alpha <- 0.05
+significant_species <- as.data.frame(diff_abund_species)
+significant_species <- filter(significant_species, padj < alpha)
+
+#merge tables with significant results with table of taxonomic information
+species_df <- as.data.frame(tax_table(abundant_species))
+significant_species <- merge(significant_species, species_df, by = "row.names")
+significant_species <- arrange(significant_species, log2FoldChange)
+
+dim(significant_species)
+significant_species
+
+#set taxonomic level to family
+abundant_family <- tax_glom(abundant_taxa, taxrank = "Family")
+abundant_family
+
+#DESeq2 analysis family
+deseq_family <- phyloseq_to_deseq2(abundant_family, ~ Disease)
+geo_means_family <- apply(counts(deseq_family), 1, calculate_gm_mean)
+deseq_family <- estimateSizeFactors(deseq_family, geoMeans = geo_means_family)
+deseq_family <- DESeq(deseq_family, fitType = "local")
+
+diff_abund_family <- results(deseq_family)
+
+#filter for data with p-value below alpha (0.05)
+alpha <- 0.05
+significant_family <- as.data.frame(diff_abund_family)
+significant_family <- filter(significant_family, padj < alpha)
+
+#merge tables with significant results with table of taxonomic information
+family_df <- as.data.frame(tax_table(abundant_family))
+significant_family <- merge(significant_family, family_df, by = "row.names")
+significant_family <- arrange(significant_family, log2FoldChange)
+
+dim(significant_family)
+significant_family
+
+#create differential abundance family plot
+significant_family <- mutate(significant_family,
+                             Family = factor(Family, levels = unique(Family)))
+
+ggplot(significant_family, aes(x = log2FoldChange, y = Family)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Differential abundant family control vs PD",
+       x = expression(log[2]~fold~change),
+       y = "Family") +
+  theme_bw()
+
+#getting most abundant taxa at the genus level
 #set taxonomic level to genus
 abundant_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
 abundant_genera
@@ -428,7 +488,6 @@ ggplot(roseburia_long, aes(x = Disease, y = Abundance)) +
        y     = "Relative abundance")
 
 
-
 #Oscillibacter relative abundance
 
 #set taxonomic rank to genus 
@@ -464,6 +523,7 @@ ggplot(Eubacterium_coprostanoligenes_group_long, aes(x = Disease, y = Abundance)
   labs(title = "Relative abundance of Eubacterium coprostanoligenes group",
        x     = "Disease",
        y     = "Relative abundance")
+
 
 
 #differential abundance for non-PD low Vitamin B1 vs non-PD high Vitamin B1
