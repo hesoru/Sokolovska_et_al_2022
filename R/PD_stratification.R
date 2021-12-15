@@ -4,6 +4,9 @@ library(dplyr)
 library(readxl)
 library(xlsx)
 
+#select a specific set of random numbers and makes the analysis reproducible
+set.seed(711)
+
 #import metadata Excel file
 parkinsons_metadata <- read_excel("~/4th Year Uni/TERM 2/MICB 447/Datasets/parkinsons_metadata.xlsx")
 View(parkinsons_metadata)
@@ -206,5 +209,120 @@ stratified_PD_data_frame <- mutate(stratified_PD_data_frame, Vitamin_E_intake_st
                                                                                                                       "high")))
 #final output = stratified_PD_data_frame (111 columns, 300 rows)
 
-#export data frame as .xlsx file
-write.xlsx(stratified_PD_data_frame, "C:/Users/Helena/Documents/4th Year Uni/TERM 2/MICB 447/447_R_directory/+B3_stratified_PD_metadata.xlsx")
+#startifying based on disease and dose intake
+
+#creating a new variable combining the disease to nutrient intake:
+parkinsons_metadata_Stratified <- read_excel("+B3_stratified_na.rm_PD_metadata.xlsx")
+View(parkinsons_metadata_Stratified)
+
+#create data frame of metadata
+PD_data_frame <- data.frame(parkinsons_metadata_Stratified)
+
+#add new column to data frame that sums up nutrient intake and disease status
+PD_data_frame$Total_Vitamin_A_and_Disease <- paste(PD_data_frame$Total_Vitamin_A_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_B1_and_Disease <- paste(PD_data_frame$Vitamin_B1_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_B2_and_Disease <- paste(PD_data_frame$Vitamin_B2_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_B3_and_Disease <- paste(PD_data_frame$Vitamin_B3_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_B6_and_Disease <- paste(PD_data_frame$Vitamin_B6_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_B12_and_Disease <- paste(PD_data_frame$Vitamin_B12_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_C_and_Disease <- paste(PD_data_frame$Vitamin_C_intake_stratified, "and", PD_data_frame$Disease) 
+PD_data_frame$Total_Vitamin_D_and_Disease <- paste(PD_data_frame$Vitamin_D_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$Total_Vitamin_E_and_Disease <- paste(PD_data_frame$Vitamin_E_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$SFA_intake_stratified_and_Disease<- paste(PD_data_frame$SFA_intake_stratified, "and", PD_data_frame$Disease)
+PD_data_frame$PUFA_intake_stratified_and_Disease<- paste(PD_data_frame$PUFA_intake_stratified, "and", PD_data_frame$Disease)
+
+#create box plots of nutrients combined with disease
+
+PD_data_frame %>%
+  ggplot(aes(x = PUFA_intake_stratified_and_Disease, y = PUFA)) +
+  geom_boxplot() +
+  labs(title = "PUFA Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "PUFA (g)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = SFA_intake_stratified_and_Disease, y = SFA)) +
+  geom_boxplot() +
+  labs(title = "SFA Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "SFA (g)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_A_and_Disease, y = Total_Vitamin_A)) +
+  geom_boxplot() +
+  labs(title = "(Vitamin A + Equivalents) Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mcg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_B1_and_Disease, y = Vitamin_B1)) +
+  geom_boxplot() +
+  labs(title = "Vitamin B1 Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_B2_and_Disease, y = Vitamin_B2)) +
+  geom_boxplot() +
+  labs(title = "Vitamin B2 Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_B3_and_Disease, y = Niacin)) +
+  geom_boxplot() +
+  labs(title = "Vitamin B3 Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_B6_and_Disease, y = Vitamin_B6)) +
+  geom_boxplot() +
+  labs(title = "Vitamin B6 Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_B12_and_Disease, y = Vitamin_B12)) +
+  geom_boxplot() +
+  labs(title = "Vitamin B12 Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mcg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_C_and_Disease, y = Vitamin_C)) +
+  geom_boxplot() +
+  labs(title = "Vitamin C Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_D_and_Disease, y = Vitamin_D)) +
+  geom_boxplot() +
+  labs(title = "Vitamin D Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mcg)") +
+  theme_bw()
+
+PD_data_frame %>%
+  ggplot(aes(x = Total_Vitamin_E_and_Disease, y = Vitamin_E)) +
+  geom_boxplot() +
+  labs(title = "Vitamin E Intake and Disease",
+       x = "Intake dose and disease status",
+       y = "Intake (mg)") +
+  theme_bw()
+
+#export data frame as xlsx
+write.xlsx(PD_data_frame, "/Users/Ayda/Desktop/stratified_PD_Disease_Combined_metadata.xlsx")
+
+
+
