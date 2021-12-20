@@ -1,3 +1,13 @@
+#########################################################################################################
+#Team1_script2_447_21WT1.R
+#Paper: "Dietary vitamin B6 intake influences the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
+#Authors: Ayda Fathi, Yoyo Lee, Helena Sokolovska, and Yixuan Zhang
+#Date: December 19, 2021
+#Purpose: R analysis - nutrient stratification, differential/relative abundance analysis
+#########################################################################################################
+
+
+
 ######################################## Nutrient Stratification ########################################
 
 #load packages
@@ -693,6 +703,8 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
        y = "Genus") +
   theme_bw()
 
+######################################## Relative Abundance Analysis: Non-PD, Low vs. High Vitamin B1 ######################################## 
+
 #relative abundance (non PD Vitamin B1)
 #calculate relative abundance
 vitb1_RA <- transform_sample_counts(vitb1, calculate_relative_abundance)
@@ -956,6 +968,8 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
        x = expression(log[2]~fold~change),
        y = "Genus") +
   theme_bw()
+
+######################################## Relative Abundance Analysis: non-PD, Low vs. High Vitamin B6 #########################################
 
 #relative abundance of Prevotellaceae_NK3B31_group (non PD Vitamin B6)
 #calculate relative abundance
