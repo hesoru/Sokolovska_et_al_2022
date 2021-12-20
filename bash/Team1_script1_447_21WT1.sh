@@ -5,12 +5,16 @@
 #Paper: "Dietary vitamin B6 intake influences the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
 #Authors: Ayda Fathi, Yoyo Lee, Helena Sokolovska, and Yixuan Zhang
 #Date: December 19, 2021
-#Purpose: QIIME2 and PICRUSt2 analysis - generating feature table, alpha/beta diversity analysis, differential functional potential analysis
+#Purpose:
+  #QIIME2 analysis - generating feature table, alpha/beta diversity analysis, taxonomic classification
+  #PICRUSt2 analysis - differential functional potential analysis
 #########################################################################################################
 
 
 
-#samples with N/A values are manually removed from manifest.
+######################################## QIIME2 analysis: Generating Feature Table ########################################
+
+#samples with N/A values are manually removed from manifest
 
 #import demultiplexed sequences while in data directory
 qiime tools import \
@@ -62,6 +66,8 @@ qiime feature-table summarize \
   --m-sample-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --o-visualization /data/table-no-mitochondria-no-chloroplast.qzv
 
+######################################## QIIME2 analysis: Alpha/Beta Diversity Analysis ########################################
+
 #create unrooted and rooted trees using fasttree
 qiime phylogeny align-to-tree-mafft-fasttree \
   --i-sequences /data/rep-seqs-dada2.qza \
@@ -90,17 +96,14 @@ qiime diversity alpha-group-significance \
   --i-alpha-diversity /data/core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv\
   --o-visualization /data/core-metrics-results_filtered_no_mitochondria/faiths_pd_statistics.qzv
-
 qiime diversity alpha-group-significance \
  --i-alpha-diversity /data/core-metrics-results_filtered_no_mitochondria/evenness_vector.qza \
  --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
  --o-visualization /data/core-metrics-results_filtered_no_mitochondria/evenness_statistics.qzv
-
 qiime diversity alpha-group-significance \
  --i-alpha-diversity /data/core-metrics-results_filtered_no_mitochondria/shannon_vector.qza \
  --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
  --o-visualization /data/core-metrics-results_filtered_no_mitochondria/shannon_statistics.qzv
-
 qiime diversity alpha-group-significance \
  --i-alpha-diversity /data/core-metrics-results_filtered_no_mitochondria/observed_features_vector.qza \
  --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -112,61 +115,51 @@ qiime longitudinal anova \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * PUFA_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_PUFA_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * SFA_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_SFA_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Total_Vitamin_A_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Total_Vitamin_A_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_B1_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_B1_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_B2_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_B2_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_B3_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_B3_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_B6_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_B6_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_B12_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_B12_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_C_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_C_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
   --p-formula 'faith_pd ~ Disease * Vitamin_D_intake_stratified' \
   --o-visualization core-metrics-results_filtered_no_mitochondria/faiths_pd_Vitamin_D_anova.qzv
-
 qiime longitudinal anova \
   --m-metadata-file core-metrics-results_filtered_no_mitochondria/faith_pd_vector.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -180,7 +173,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_A_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_A_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -195,7 +187,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_B1_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_B1_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -210,7 +201,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_B2_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_B2_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -225,7 +215,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_B3_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_B3_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -240,7 +229,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_B6_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_B6_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -255,7 +243,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_B12_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_B12_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -270,7 +257,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_C_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_C_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -285,7 +271,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_D_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_D_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -300,7 +285,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column Total_Vitamin_E_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-Total_Vitamin_E_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -315,7 +299,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column SFA_intake_stratified_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-SFA_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -330,7 +313,6 @@ qiime diversity beta-group-significance \
   --m-metadata-column PUFA_intake_stratified_and_Disease \
   --o-visualization core-metrics-results_filtered_no_mitochondria/unweighted-unifrac-PUFA_and_Disease-significance.qzv \
   --p-pairwise
-
 qiime diversity beta-group-significance \
   --i-distance-matrix /data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
   --m-metadata-file /data/colrm_stratified_PD_Disease_Combined_metadata.tsv \
@@ -354,17 +336,13 @@ qiime diversity beta-group-significance \
   --o-visualization /data/core-metrics-results_filtered_no_mitochondria/weighted-unifrac-Disease-significance.qzv \
   --p-pairwise
 
-#export files for R
-
 #export files to do analysis in R
 qiime tools export \
   --input-path rooted-tree.qza \
   --output-path exported
-
 qiime tools export \
   --input-path table-no-mitochondria-no-chloroplast.qza \
   --output-path exported
-
 qiime tools export \
   --input-path taxonomy.qza \
   --output-path exported
@@ -389,7 +367,8 @@ biom add-metadata \
 scp root@10.19.139.102:/data/exported/*.biom .
 scp root@10.19.139.102:/data/exported/*.nwk .
 
-#taxonomic classification 
+######################################## QIIME2 analysis: Taxonomic Classification ########################################
+
 #Filter metadata columns to include only high vitamin B6 intake
 qiime feature-table filter-samples \
   --i-table  table-no-mitochondria-no-chloroplast.qza \
@@ -397,33 +376,33 @@ qiime feature-table filter-samples \
   --p-where "[Total_Vitamin_B6_and_Disease] IN ('high and PD', 'high and Control')" \
   --o-filtered-table high_B6-filtered-table.qza
 
- #taxonomy classification using machine-learning classifier SILVA
- qiime feature-classifier classify-sklearn \
+#taxonomy classification using machine-learning classifier SILVA
+qiime feature-classifier classify-sklearn \
   --i-reads ./rep-seqs-filtered.qza\
   --i-classifier /mnt/datasets/classifiers/silva-138-99-515-806-nb-classifier.qza \
   --o-classification ./silva-138-99-515-806-nb-taxonomy.qza
   
-  #visualize taxonomy associated with the sequences
-  qiime metadata tabulate \
+#visualize taxonomy associated with the sequences
+qiime metadata tabulate \
   --m-input-file ./silva-138-99-515-806-nb-taxonomy.qza \
   --o-visualization ./silva-138-99-515-806-nb-taxonomy.qzv
   
-  #tabulate the representative sequences
-  qiime feature-table tabulate-seqs \
+#tabulate the representative sequences
+qiime feature-table tabulate-seqs \
   --i-data ./rep-seqs-filtered.qza \
   --o-visualization ./rep-seqs-filtered.qzv
 
- #taxonomy barchart
- #first filter out any samples with fewer features than our 
- #rarefaction threshold (7000). 
+#taxonomy barchart
+#first filter out any samples with fewer features than our 
+#rarefaction threshold (7000). 
 
-  qiime feature-table filter-samples \
+qiime feature-table filter-samples \
   --i-table ./high_B6-filtered-table.qza\
   --p-min-frequency 7000 \
   --o-filtered-table ./table_7k_filtered.qza
 
-  #use the filtered table to build an interactive barplot of the taxonomy in each sample.
-  qiime taxa barplot \
+#use the filtered table to build an interactive barplot of the taxonomy in each sample
+qiime taxa barplot \
   --i-table ./table_7k_filtered.qza \
   --i-taxonomy ./silva-138-99-515-806-nb-taxonomy.qza \
   --m-metadata-file ./colrm_stratified_PD_Disease_Combined_metadata.tsv\
@@ -431,7 +410,8 @@ qiime feature-table filter-samples \
   
 scp root@10.19.139.56:/data/project_2/taxa_barplot.qzv .
 
-#PICRUSt Analysis
+######################################## PICRUSt2 analysis: Functional Potential Analysis ########################################
+
 set -ex
 
 # [1] scp study_seqs.fna and study_seqs.biom into the picrust2_out_pipeline directory
