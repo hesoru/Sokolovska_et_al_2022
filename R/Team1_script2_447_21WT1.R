@@ -327,9 +327,8 @@ PD_data_frame %>%
 write.xlsx(PD_data_frame, "/Users/Ayda/Desktop/stratified_PD_Disease_Combined_metadata.xlsx")
 
 
-######################################## Differential Abundance Analysis ########################################
+######################################## Differential Abundance Analysis: PD vs. Non-PD ########################################
 
-#differential abundance PD vs Non-PD
 #loading CRAN packages
 library(tidyverse)
 library(vegan)
@@ -355,7 +354,6 @@ tree      <- read_tree_greengenes ("tree.nwk")
 
 #convert tree from multichotomous to dichotomous
 tree <- multi2di(tree)
-
 
 # Combine all information into a single phyloseq object
 physeq <- merge_phyloseq(biom_file, metadata, tree)
@@ -478,7 +476,8 @@ significant_species <- arrange(significant_species, log2FoldChange)
 dim(significant_species)
 significant_species
 
-#relative abundance
+######################################## Relative Abundance Analysis: PD vs. Non-PD ########################################
+
 #calculate relative abundance
 at_least_7000_RA <- transform_sample_counts(at_least_7000, calculate_relative_abundance)
 
@@ -599,8 +598,8 @@ ggplot(Eubacterium_coprostanoligenes_group_long, aes(x = Disease, y = Abundance)
        x     = "Disease",
        y     = "Relative abundance")
 
+######################################## Differential Abundance Analysis: Non-PD, Low vs. High Vitamin B1 ######################################## 
 
-#differential abundance for non-PD low Vitamin B1 vs non-PD high Vitamin B1
 #loading CRAN packages
 library(tidyverse)
 library(vegan)
@@ -768,7 +767,8 @@ ggplot(Gastranaerophilales_long, aes(x = Total_Vitamin_B1_and_Disease, y = Abund
        x     = "Vitamin B1 intake and disease",
        y     = "Relative abundance")
 
-#differential abundance for PD low Vitamin B1 vs PD high Vitamin B1
+######################################## Differential Abundance Analysis: PD, Low vs. High Vitamin B1 ######################################## 
+
 #loading CRAN packages
 library(tidyverse)
 library(vegan)
@@ -862,7 +862,8 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
        y = "Genus") +
   theme_bw()
 
-#differential abundance for non-PD low Vitamin B6 vs non-PD high Vitamin B6
+######################################## Differential Abundance Analysis: non-PD, Low vs. High Vitamin B6 #########################################
+
 #loading CRAN packages
 library(tidyverse)
 library(vegan)
@@ -981,7 +982,8 @@ ggplot(Prevotellaceae_NK3B31_group_long, aes(x = Total_Vitamin_B6_and_Disease, y
        x     = "Vitamin B6 intake and disease",
        y     = "Relative abundance")
 
-#differential abundance for PD low Vitamin B6 vs PD high Vitamin B6
+######################################## Differential Abundance Analysis: PD, Low vs. High vitamin B6 ########################################
+
 #loading CRAN packages
 library(tidyverse)
 library(vegan)
@@ -1074,4 +1076,3 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
        x = expression(log[2]~fold~change),
        y = "Genus") +
   theme_bw()
-
