@@ -1,3 +1,15 @@
+#!/usr/bin/env bash
+
+#########################################################################################################
+#Team1_script1_447_21WT1.sh
+#Paper: "Dietary vitamin B6 intake influences the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
+#Authors: Ayda Fathi, Yoyo Lee, Helena Sokolovska, and Yixuan Zhang
+#Date: December 19, 2021
+#Purpose: QIIME2 and PICRUSt2 analysis - generating feature table, alpha/beta diversity analysis, differential functional potential analysis
+#########################################################################################################
+
+
+
 #samples with N/A values are manually removed from manifest.
 
 #import demultiplexed sequences while in data directory
@@ -420,7 +432,6 @@ qiime feature-table filter-samples \
 scp root@10.19.139.56:/data/project_2/taxa_barplot.qzv .
 
 #PICRUSt Analysis
-#!/usr/bin/env bash
 set -ex
 
 # [1] scp study_seqs.fna and study_seqs.biom into the picrust2_out_pipeline directory
@@ -462,4 +473,3 @@ for i in {1..5}; do
     -o $OUT_PATHWAYS \
     -p 1
 done
-
