@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 #########################################################################################################
-#Team1_script1_447_21WT1.sh
+#Fathi_et_al_2022_script1.sh
 #Paper: "Dietary vitamin B6 intake influences the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
-#Authors: Ayda Fathi, Yoyo Lee, Helena Sokolovska, and Yixuan Zhang
-#Date: December 19, 2021
+#Authors: Ayda Fathi, Helena Sokolovska, Yixuan Zhang, and Yoyo Lee
+#Date: January 31, 2022
 #Purpose:
   #QIIME2 analysis - generating feature table, alpha/beta diversity analysis, taxonomic classification
   #PICRUSt2 analysis - differential functional potential analysis
