@@ -1,5 +1,3 @@
-# Fathi_et_al_2022
-
 **Supplementary Scripts:**
 
 "Dietary vitamin B6 intake influences the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
