@@ -1,8 +1,8 @@
 #########################################################################################################
-#Fathi_et_al_2022_script2.R
-#Paper: "Dietary vitamin B6 intake influences the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
-#Authors: Ayda Fathi, Helena Sokolovska, Yixuan Zhang, and Yoyo Lee
-#Date: January 31, 2022
+#Sokolovska_et_al_2022_script2.R
+#Paper: "Dietary vitamin B1, B2, and B6 intake influence the microbial composition and functional potential of the gut microbiome in Parkinson’s disease"
+#Authors: Helena Sokolovska, Yixuan Zhang, Ayda Fathi, and Yoyo Lee
+#Date: Sep 5, 2022
 #Purpose: R analysis - nutrient stratification, differential/relative abundance analysis
 #########################################################################################################
 
