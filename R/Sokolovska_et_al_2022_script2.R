@@ -15,6 +15,8 @@ library(ggplot2)
 library(dplyr)
 library(readxl)
 library(xlsx)
+library(vegan)
+library(tidyverse)
 
 #select a specific set of random numbers and makes the analysis reproducible
 set.seed(711)
@@ -336,6 +338,108 @@ PD_data_frame %>%
 #export data frame as xlsx
 write.xlsx(PD_data_frame, "/Users/Ayda/Desktop/stratified_PD_Disease_Combined_metadata.xlsx")
 
+######################################## Dunn's Test: significant variables from Kruskal-Wallis test ########################################
+
+#download Faith's PD statistics for vitamin B2 (fpd_B2.tsv)
+
+#import file
+fpd_B2 <- read.table(file = "fpd_B2.tsv", sep = '\t', header = TRUE)
+
+#confirm Kruskal-Wallis result is significant
+kruskal.test(faith_pd ~ Total_Vitamin_B2_and_Disease, data = fpd_B2)
+
+#Dunn's test
+dunn <- dunnTest(faith_pd ~ Total_Vitamin_B2_and_Disease,
+         data=fpd_B2,
+         method="bh")
+print(dunn)
+
+######################################## Adonis Analysis ########################################
+
+#import metadata
+meta <- read_tsv("colrm_stratified_PD_Disease_Combined_metadata.tsv", col_names = TRUE)
+
+#import weighted/unweighted UniFrac distance matrices
+unweighted_csv <- read.csv("unweighted_unifrac_distance_matrix.txt", row.names = 1)
+unweighted <- as.matrix(unweighted_csv)
+weighted_csv <- read.csv("weighted_unifrac_distance_matrix.txt", row.names = 1)
+weighted <- as.matrix(weighted_csv)
+
+unweighted_csv_samples <- cbind(Samples = rownames(unweighted_csv), unweighted_csv)
+meta_subset <- meta %>%
+  filter(SampleID %in% unweighted_csv$X)
+
+#adonis analysis
+
+set.seed(42)
+
+vitamin_A_weighted_adonis <- adonis(weighted ~ Disease*Total_Vitamin_A_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_A_unweighted_adonis <- adonis(unweighted ~ Disease*Total_Vitamin_A_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_B1_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_B1_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_B1_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_B1_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_B2_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_B2_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_B2_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_B2_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_B3_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_B3_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_B3_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_B3_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_B6_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_B6_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_B6_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_B6_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_B12_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_B12_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_B12_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_B12_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_C_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_C_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_C_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_C_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_D_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_D_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_D_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_D_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+vitamin_E_weighted_adonis <- adonis(weighted ~ Disease*Vitamin_E_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+vitamin_E_unweighted_adonis <- adonis(unweighted ~ Disease*Vitamin_E_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+SFA_weighted_adonis <- adonis(weighted ~ Disease*SFA_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+SFA_unweighted_adonis <- adonis(unweighted ~ Disease*SFA_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+PUFA_weighted_adonis <- adonis(weighted ~ Disease*PUFA_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+PUFA_unweighted_adonis <- adonis(unweighted ~ Disease*PUFA_intake_stratified, meta_subset, permutations = 999, parallel = 1)
+
+#print results
+
+print(vitamin_A_weighted_adonis)
+print(vitamin_A_unweighted_adonis)
+
+print(vitamin_B1_weighted_adonis)
+print(vitamin_B1_unweighted_adonis)
+
+print(vitamin_B2_weighted_adonis)
+print(vitamin_B2_unweighted_adonis)
+
+print(vitamin_B3_weighted_adonis)
+print(vitamin_B3_unweighted_adonis)
+
+print(vitamin_B6_weighted_adonis)
+print(vitamin_B6_unweighted_adonis)
+
+print(vitamin_B12_weighted_adonis)
+print(vitamin_B12_unweighted_adonis)
+
+print(vitamin_C_weighted_adonis)
+print(vitamin_C_unweighted_adonis)
+
+print(vitamin_D_weighted_adonis)
+print(vitamin_D_unweighted_adonis)
+
+print(vitamin_E_weighted_adonis)
+print(vitamin_E_unweighted_adonis)
+
+print(PUFA_weighted_adonis)
+print(PUFA_unweighted_adonis)
+
+print(SFA_weighted_adonis)
+print(SFA_unweighted_adonis)
 
 ######################################## Differential Abundance Analysis: PD vs. Non-PD ########################################
 
@@ -424,67 +528,6 @@ ggplot(significant_genera, aes(x = log2FoldChange, y = Genus)) +
        x = expression(log[2]~fold~change),
        y = "Genus") +
   theme_bw()
-
-#set taxonomic level to family
-abundant_family <- tax_glom(abundant_taxa, taxrank = "Family")
-abundant_family
-
-#DESeq2 analysis family
-deseq_family <- phyloseq_to_deseq2(abundant_family, ~ Disease)
-geo_means_family <- apply(counts(deseq_family), 1, calculate_gm_mean)
-deseq_family <- estimateSizeFactors(deseq_family, geoMeans = geo_means_family)
-deseq_family <- DESeq(deseq_family, fitType = "local")
-
-diff_abund_family <- results(deseq_family)
-
-#filter for data with p-value below alpha (0.05)
-alpha <- 0.05
-significant_family <- as.data.frame(diff_abund_family)
-significant_family <- filter(significant_family, padj < alpha)
-
-#merge tables with significant results with table of taxonomic information
-family_df <- as.data.frame(tax_table(abundant_family))
-significant_family <- merge(significant_family, family_df, by = "row.names")
-significant_family <- arrange(significant_family, log2FoldChange)
-
-dim(significant_family)
-significant_family
-
-#create differential abundance family plot
-significant_family <- mutate(significant_family,
-                             Family = factor(Family, levels = unique(Family)))
-
-ggplot(significant_family, aes(x = log2FoldChange, y = Family)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Differential abundant family control vs PD",
-       x = expression(log[2]~fold~change),
-       y = "Family") +
-  theme_bw()
-
-#set taxonomic level to species
-abundant_species <- tax_glom(abundant_taxa, taxrank = "Species")
-abundant_species
-
-#DESeq2 analysis species
-deseq_genus_species <- phyloseq_to_deseq2(abundant_species, ~ Disease)
-geo_means_species <- apply(counts(deseq), 1, calculate_gm_mean)
-deseq_species <- estimateSizeFactors(deseq, geoMeans = geo_means_species)
-deseq_species <- DESeq(deseq_species, fitType = "local")
-
-diff_abund_species <- results(deseq_species)
-
-#filter for data with p-value below alpha (0.05)
-alpha <- 0.05
-significant_species <- as.data.frame(diff_abund_species)
-significant_species <- filter(significant_species, padj < alpha)
-
-#merge tables with significant results with table of taxonomic information
-species_df <- as.data.frame(tax_table(abundant_species))
-significant_species <- merge(significant_species, species_df, by = "row.names")
-significant_species <- arrange(significant_species, log2FoldChange)
-
-dim(significant_species)
-significant_species
 
 ######################################## Relative Abundance Analysis: PD vs. Non-PD ########################################
 
@@ -705,15 +748,15 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
 
 ######################################## Relative Abundance Analysis: Non-PD, Low vs. High Vitamin B1 ######################################## 
 
-#relative abundance (non PD Vitamin B1)
-#calculate relative abundance
-vitb1_RA <- transform_sample_counts(vitb1, calculate_relative_abundance)
+#relative abundance in control gut
+control_gut <- subset_samples(at_least_7000, Disease == "Control")
+control_gut_RA <- transform_sample_counts(control_gut, calculate_relative_abundance)
 
 #remove low abundance features
-total_counts <- taxa_sums(vitb1)
+total_counts <- taxa_sums(control_gut)
 relative_abundance <- calculate_relative_abundance(total_counts)
 abundant <- relative_abundance > 0.001 
-abundant_taxa <- prune_taxa(abundant, vitb1_RA)
+abundant_taxa <- prune_taxa(abundant, control_gut_RA)
 
 #set taxonomic level to genus
 abundant_RA_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
@@ -748,35 +791,47 @@ otu_table(Gastranaerophilales)
 Gastranaerophilales_long <- psmelt(Gastranaerophilales)
 Gastranaerophilales_long
 
+#reorder factor levels
+Muribaculaceae_long$Vitamin_B1_intake_stratified <- factor(Muribaculaceae_long$Vitamin_B1_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+Prevotellaceae_NK3B31_group_long$Vitamin_B1_intake_stratified <- factor(Prevotellaceae_NK3B31_group_long$Vitamin_B1_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+Bacteroides_long$Vitamin_B1_intake_stratified <- factor(Bacteroides_long$Vitamin_B1_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+Lachnoclostridium_long$Vitamin_B1_intake_stratified <- factor(Lachnoclostridium_long$Vitamin_B1_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+Gastranaerophilales_long$Vitamin_B1_intake_stratified <- factor(Gastranaerophilales_long$Vitamin_B1_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+
 #relative abundance plots
-ggplot(Muribaculaceae_long, aes(x = Total_Vitamin_B1_and_Disease, y = Abundance)) +
+ggplot(Muribaculaceae_long, aes(x = Vitamin_B1_intake_stratified, y = Abundance)) +
   geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
   labs(title = "Relative abundance of Muribaculaceae",
-       x     = "Vitamin B1 intake and disease",
+       x     = "Vitamin B1 intake in non-PD",
        y     = "Relative abundance")
 
-ggplot(Prevotellaceae_NK3B31_group_long, aes(x = Total_Vitamin_B1_and_Disease, y = Abundance)) +
+ggplot(Prevotellaceae_NK3B31_group_long, aes(x = Vitamin_B1_intake_stratified, y = Abundance)) +
   geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
   labs(title = "Relative abundance of Prevotellaceae_NK3B31_group",
-       x     = "Vitamin B1 intake and disease",
+       x     = "Vitamin B1 intake in non-PD",
        y     = "Relative abundance")
 
-ggplot(Bacteroides_long, aes(x = Total_Vitamin_B1_and_Disease, y = Abundance)) +
+ggplot(Bacteroides_long, aes(x = Vitamin_B1_intake_stratified, y = Abundance)) +
   geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
   labs(title = "Relative abundance of Bacteroides",
-       x     = "Vitamin B1 intake and disease",
+       x     = "Vitamin B1 intake in non-PD",
        y     = "Relative abundance")
 
-ggplot(Lachnoclostridium_long, aes(x = Total_Vitamin_B1_and_Disease, y = Abundance)) +
+ggplot(Lachnoclostridium_long, aes(x = Vitamin_B1_intake_stratified, y = Abundance)) +
   geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
   labs(title = "Relative abundance of Lachnoclostridium",
-       x     = "Vitamin B1 intake and disease",
+       x     = "Vitamin B1 intake in non-PD",
        y     = "Relative abundance")
 
-ggplot(Gastranaerophilales_long, aes(x = Total_Vitamin_B1_and_Disease, y = Abundance)) +
+ggplot(Gastranaerophilales_long, aes(x = Vitamin_B1_intake_stratified, y = Abundance)) +
   geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
   labs(title = "Relative abundance of Gastranaerophilales",
-       x     = "Vitamin B1 intake and disease",
+       x     = "Vitamin B1 intake in non-PD",
        y     = "Relative abundance")
 
 ######################################## Differential Abundance Analysis: PD, Low vs. High Vitamin B1 ######################################## 
@@ -873,6 +928,279 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
        x = expression(log[2]~fold~change),
        y = "Genus") +
   theme_bw()
+
+######################################## Differential Abundance Analysis: Non-PD, Low vs. High Vitamin B2 ######################################## 
+
+#loading CRAN packages
+library(tidyverse)
+library(vegan)
+library(ape)
+
+#load Bioconductor packages
+library(phyloseq)
+library(DESeq2)
+
+#provide custom function
+calculate_relative_abundance <- function(x) x / sum(x)
+calculate_gm_mean <- function(x, na.rm = TRUE) {
+  exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+}
+
+#setting random numbers
+set.seed(711)
+
+#importing Qiime2 data into R
+biom_file <- import_biom("table-with-taxonomy.biom")
+metadata  <- import_qiime_sample_data("colrm_stratified_PD_Disease_Combined_metadata.tsv")
+tree      <- read_tree_greengenes("tree.nwk")
+
+#convert tree from multichotomous to dichotomous
+tree <- multi2di(tree)
+
+# Combine all information into a single phyloseq object
+physeq <- merge_phyloseq(biom_file, metadata, tree)
+
+#assign new taxonomic column name
+colnames(tax_table(physeq)) <- c("Kingdom", "Phylum", "Class","Order", "Family",
+                                 "Genus", "Species")
+head(tax_table(physeq))
+
+#Setting sampling depth
+sample_sums(physeq) >= 7000
+
+#Filter samples based on sampling depth
+at_least_7000 <- prune_samples(sample_sums(physeq) >= 7000, physeq)
+sample_sums(at_least_7000)
+
+#filter based on metadata
+vitb2 <- subset_samples(at_least_7000, Total_Vitamin_B2_and_Disease %in% c("low and Control", "high and Control"))
+
+#remove low abundance features
+total_counts <- taxa_sums(vitb2)
+relative_abundance <- calculate_relative_abundance(total_counts)
+abundant <- relative_abundance > 0.001 
+abundant_taxa <- prune_taxa(abundant, vitb2)
+abundant_taxa
+
+#set taxonomic level to genus
+abundant_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
+abundant_genera
+
+#convert variable to 2 categories
+sample_data(abundant_genera)$Total_Vitamin_B2_and_Disease <-
+  factor(sample_data(abundant_genera)$Total_Vitamin_B2_and_Disease,
+         levels = c("low and Control", "high and Control"))
+
+#DESeq2 analysis genus
+deseq <- phyloseq_to_deseq2(abundant_genera, ~ Total_Vitamin_B1_and_Disease)
+geo_means <- apply(counts(deseq), 1, calculate_gm_mean)
+deseq <- estimateSizeFactors(deseq, geoMeans = geo_means)
+deseq <- DESeq(deseq, fitType = "local")
+
+diff_abund <- results(deseq)
+
+#filter for data with p-value below alpha (0.05)
+alpha <- 0.05
+significant <- as.data.frame(diff_abund)
+significant <- filter(significant, padj < alpha)
+
+#merge tables with significant results with table of taxonomic information
+genera_df <- as.data.frame(tax_table(abundant_genera))
+significant <- merge(significant, genera_df, by = "row.names")
+significant <- arrange(significant, log2FoldChange)
+
+dim(significant)
+significant
+
+#create differential abundance genera plot
+significant <- filter(significant, Genus != "g__")
+significant <- mutate(significant,
+                      Genus = factor(Genus, levels = Genus))
+
+ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Differential abundant genera non-PD low Vitamin B2 vs non-PD high Vitamin B2",
+       x = expression(log[2]~fold~change),
+       y = "Genus") +
+  theme_bw()
+
+######################################## Differential Abundance Analysis: PD, Low vs. High Vitamin B2 ######################################## 
+
+#loading CRAN packages
+library(tidyverse)
+library(vegan)
+library(ape)
+
+#load Bioconductor packages
+library(phyloseq)
+library(DESeq2)
+
+#provide custom function
+calculate_relative_abundance <- function(x) x / sum(x)
+calculate_gm_mean <- function(x, na.rm = TRUE) {
+  exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+}
+
+#setting random numbers
+set.seed(711)
+
+#importing Qiime2 data into R
+biom_file <- import_biom("table-with-taxonomy.biom")
+metadata  <- import_qiime_sample_data("colrm_stratified_PD_Disease_Combined_metadata.tsv")
+tree      <- read_tree_greengenes("tree.nwk")
+
+#convert tree from multichotomous to dichotomous
+tree <- multi2di(tree)
+
+# Combine all information into a single phyloseq object
+physeq <- merge_phyloseq(biom_file, metadata, tree)
+
+#assign new taxonomic column name
+colnames(tax_table(physeq)) <- c("Kingdom", "Phylum", "Class","Order", "Family",
+                                 "Genus", "Species")
+head(tax_table(physeq))
+
+#Setting sampling depth
+sample_sums(physeq) >= 7000
+
+#Filter samples based on sampling depth
+at_least_7000 <- prune_samples(sample_sums(physeq) >= 7000, physeq)
+sample_sums(at_least_7000)
+
+#filter based on metadata
+vitB2 <- subset_samples(at_least_7000, Total_Vitamin_B2_and_Disease %in% c("low and PD", "high and PD"))
+
+#remove low abundance features
+total_counts <- taxa_sums(vitB2)
+relative_abundance <- calculate_relative_abundance(total_counts)
+abundant <- relative_abundance > 0.001 
+abundant_taxa <- prune_taxa(abundant, vitB2)
+abundant_taxa
+
+#set taxonomic level to genus
+abundant_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
+abundant_genera
+
+#convert variable to 2 categories
+sample_data(abundant_genera)$Total_Vitamin_B2_and_Disease <-
+  factor(sample_data(abundant_genera)$Total_Vitamin_B2_and_Disease,
+         levels = c("low and PD", "high and PD"))
+
+#DESeq2 analysis genus
+deseq <- phyloseq_to_deseq2(abundant_genera, ~ Total_Vitamin_B2_and_Disease)
+geo_means <- apply(counts(deseq), 1, calculate_gm_mean)
+deseq <- estimateSizeFactors(deseq, geoMeans = geo_means)
+deseq <- DESeq(deseq, fitType = "local")
+
+diff_abund <- results(deseq)
+
+#filter for data with p-value below alpha (0.05)
+alpha <- 0.05
+significant <- as.data.frame(diff_abund)
+significant <- filter(significant, padj < alpha)
+
+#merge tables with significant results with table of taxonomic information
+genera_df <- as.data.frame(tax_table(abundant_genera))
+significant <- merge(significant, genera_df, by = "row.names")
+significant <- arrange(significant, log2FoldChange)
+
+dim(significant)
+significant
+
+#create differential abundance genera plot
+significant <- filter(significant, Genus != "g__")
+significant <- mutate(significant,
+                      Genus = factor(Genus, levels = Genus))
+
+ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Differential abundant genera PD low Vitamin B2 vs PD high Vitamin B2",
+       x = expression(log[2]~fold~change),
+       y = "Genus") +
+  theme_bw()
+
+######################################################### Relative abundance: vitamin B2 in non-PD #########################################################
+
+#relative abundance of Prevotellaceae_NK3B31_group (non PD Vitamin B6)
+#calculate relative abundance
+control_gut <- subset_samples(at_least_7000, Disease == "Control")
+control_gut_RA <- transform_sample_counts(control_gut, calculate_relative_abundance)
+
+#remove low abundance features
+total_counts <- taxa_sums(control_gut)
+relative_abundance <- calculate_relative_abundance(total_counts)
+abundant <- relative_abundance > 0.001 
+abundant_taxa <- prune_taxa(abundant, control_gut_RA)
+
+#set taxonomic level to genus
+abundant_RA_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
+Butyrivibrio <- subset_taxa(abundant_RA_genera, Genus == "g__Butyrivibrio")
+otu_table(Butyrivibrio)
+
+Butyrivibrio_long <- psmelt(Butyrivibrio)
+Butyrivibrio_long
+
+Butyrivibrio_long$Vitamin_B2_intake_stratified <- factor(Butyrivibrio_long$Vitamin_B2_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+
+ggplot()
+#plot with ggplot
+ggplot(Butyrivibrio_long, aes(x = Vitamin_B2_intake_stratified, y = Abundance)) +
+  geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
+  labs(title = "Relative abundance of Butyrivibrio",
+       x     = "Vitamin B2 intake in non-PD",
+       y     = "Relative abundance")
+
+#set taxonomic level to genus
+abundant_RA_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
+Prevotellaceae_NK3B31_group <- subset_taxa(abundant_RA_genera, Genus == "g__Prevotellaceae_NK3B31_group")
+otu_table(Prevotellaceae_NK3B31_group)
+
+Prevotellaceae_NK3B31_group_long <- psmelt(Prevotellaceae_NK3B31_group)
+Prevotellaceae_NK3B31_group_long
+
+Prevotellaceae_NK3B31_group_long$Vitamin_B2_intake_stratified <- factor(Prevotellaceae_NK3B31_group_long$Vitamin_B2_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+
+ggplot()
+#plot with ggplot
+ggplot(Prevotellaceae_NK3B31_group_long, aes(x = Vitamin_B2_intake_stratified, y = Abundance)) +
+  geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
+  labs(title = "Relative abundance of Prevotellaceae_NK3B31_group",
+       x     = "Vitamin B2 intake in non-PD",
+       y     = "Relative abundance")
+
+######################################################### Relative abundance: vitamin B2 in PD #########################################################
+
+#relative abundance of Prevotellaceae_NK3B31_group (non PD Vitamin B6)
+#calculate relative abundance
+control_gut <- subset_samples(at_least_7000, Disease == "PD")
+control_gut_RA <- transform_sample_counts(control_gut, calculate_relative_abundance)
+
+#remove low abundance features
+total_counts <- taxa_sums(control_gut)
+relative_abundance <- calculate_relative_abundance(total_counts)
+abundant <- relative_abundance > 0.001 
+abundant_taxa <- prune_taxa(abundant, control_gut_RA)
+
+#set taxonomic level to genus
+abundant_RA_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
+Anaeroplasma <- subset_taxa(abundant_RA_genera, Genus == "g__Anaeroplasma")
+otu_table(Anaeroplasma)
+
+Anaeroplasma_long <- psmelt(Anaeroplasma)
+Anaeroplasma_long
+
+Anaeroplasma_long$Vitamin_B2_intake_stratified <- factor(Anaeroplasma_long$Vitamin_B2_intake_stratified, levels = c("low", "moderate", "high"), ordered = TRUE)
+
+ggplot()
+#plot with ggplot
+ggplot(Anaeroplasma_long, aes(x = Vitamin_B2_intake_stratified, y = Abundance)) +
+  geom_boxplot() +
+  theme(axis.text = element_text(size = 25), axis.title = element_text(size = 25), plot.title = element_text(size = 25)) +
+  labs(title = "Relative abundance of Anaeroplasma",
+       x     = "Vitamin B2 intake in PD",
+       y     = "Relative abundance")
 
 ######################################## Differential Abundance Analysis: non-PD, Low vs. High Vitamin B6 #########################################
 
@@ -971,15 +1299,15 @@ ggplot(significant, aes(x = log2FoldChange, y = Genus)) +
 
 ######################################## Relative Abundance Analysis: non-PD, Low vs. High Vitamin B6 #########################################
 
-#relative abundance of Prevotellaceae_NK3B31_group (non PD Vitamin B6)
-#calculate relative abundance
-vitb6_RA <- transform_sample_counts(vitb6, calculate_relative_abundance)
+#relative abundance in control gut
+control_gut <- subset_samples(at_least_7000, Disease == "Control")
+control_gut_RA <- transform_sample_counts(control_gut, calculate_relative_abundance)
 
 #remove low abundance features
-total_counts <- taxa_sums(vitb6)
+total_counts <- taxa_sums(control_gut)
 relative_abundance <- calculate_relative_abundance(total_counts)
 abundant <- relative_abundance > 0.001 
-abundant_taxa <- prune_taxa(abundant, vitb6_RA)
+abundant_taxa <- prune_taxa(abundant, control_gut_RA)
 
 #set taxonomic level to genus
 abundant_RA_genera <- tax_glom(abundant_taxa, taxrank = "Genus")
