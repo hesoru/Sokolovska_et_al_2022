@@ -22,6 +22,6 @@ This is the full code repository for our study. Processing of 16S rRNA sequencin
 - PICRUSt2 2.4.1
 - STAMP
 
-## For the full pipeline of analysis, run numbered scripts in order:
+### For the full pipeline of analysis, run numbered scripts in order:
 - Sokolovska_et_al_2022_script1.sh
 - Sokolovska_et_al_2022_script2.R
