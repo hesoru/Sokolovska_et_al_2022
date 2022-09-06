@@ -9,16 +9,16 @@ This is the full code repository for our study. Processing of 16S rRNA sequencin
 - Python 3.9.7 
 - QIIME2 2021.4
 - RStudio 2021.09.0
-  - dplyr 1.0.8
   - readxl 1.3.1  
   - xlsx 0.6.5 
-  - ggplot2 3.3.5 
+  - dplyr 1.0.8
   - tidyverse 1.3.1 
   - ape 5.6-2  
   - phyloseq 1.34.0 
   - DESeq2 1.30.1 
   - vegan 2.5-7
   - FSA 0.9.3
+  - ggplot2 3.3.5 
 - PICRUSt2 2.4.1
 - STAMP 2.1.3
 
