@@ -4,7 +4,7 @@
 
 This is the full code repository for our study. Processing of 16S rRNA sequencing data; feature table/phylogenetic tree generation; taxonomic classification; alpha/beta diversity analysis (excluding adonis/Dunn's testing); and functional potential analysis were done in bash. R was used for metadata filtering/stratifying nutrient intake data; adonis/Dunn's testing; and differential abundance analysis. 
 
-## The following dependencies are required:
+### The following dependencies are required:
 - Ubuntu 16.04.5
 - Python 3.9.7 
 - QIIME2 2021.4
