@@ -258,6 +258,12 @@ qiime tools export \
 qiime tools export \
   --input-path ./data/sequences-no-mitochondria-no-chloroplast.qza \
   --output-path ./data
+qiime tools export \
+  --input-path ./data/core-metrics-results_filtered_no_mitochondria/weighted_unifrac_distance_matrix.qza \
+  --output-path ./data/exported
+qiime tools export \
+  --input-path ./data/core-metrics-results_filtered_no_mitochondria/unweighted_unifrac_distance_matrix.qza \
+  --output-path ./data/exported
 
 #we’ll need to modify the exported taxonomy file’s header before using it with BIOM software in R. Before modifying that file, make a copy
 cp ./data/taxonomy.tsv ./data/biom-taxonomy.tsv
@@ -285,6 +291,7 @@ biom add-metadata \
 #export biom files to local computer
 scp root@10.19.139.102:./data/exported/*.biom .
 scp root@10.19.139.102:./data/exported/*.nwk .
+scp root@10.19.139.102:./data/exported/*.txt .
 
 ######################################## QIIME2 analysis: Taxonomic Classification ########################################
   
